@@ -17,10 +17,11 @@
   border-color: rgba(0, 0, 0, 0.15);
 }
 
-.tasks__item__toggle--completed {
+.tasks__item__toggle.tasks__item__toggle--completed {
   text-decoration: line-through;
   background-color: rgba(0, 128, 0, 0.15);
   border-color: rgba(0, 128, 0, 0.2);
+  color: gray;
 }
 
 .tasks__item__toggle {

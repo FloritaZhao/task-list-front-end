@@ -13,7 +13,7 @@ const Task = ({ id, title, isComplete }) => {
         className={`tasks__item__toggle ${buttonClass}`}
         onClick={() => setComplete(!complete)}
       >
-        {title}
+        {complete ? `${title} - completed` : title}
       </button>
       <button className="tasks__item__remove button">x</button>
     </li>
