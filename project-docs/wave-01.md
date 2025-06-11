@@ -18,12 +18,31 @@ In Wave 01, we will explore the starter code for Task List Front End. For this w
 Read through the code in `App.jsx`, `TaskList.jsx` and `Task.jsx` and their style sheets to understand how data and events are being handled. You may use the following questions and suggestions to guide your exploration:
 
 1. What `props` does `Task` have? Where do they come from?
+id, title, isComplete
+they come from parent tasklist array.
+
+
 1. The `Task` component uses destructuring to read in the props `const Task = ({ id, title, isComplete }) => {...`
     - How would the code change if `{id, title, isComplete}` were replaced with `props`?
+    const Task = (props) => {
+        id = props.id
+        title = props.title
+        isComplete = props.isComplete
+    }
+
     - Consider making this change and the subsequent necessary changes through the rest of the component to deepen your understanding of the code.
+    {title} ==> props.title
+
 1. What `props` does `TaskList` have? Where do they come from?
+props: {
+  tasks: [ { id, title, isComplete }, ... ]
+}
+they came from App
+
 1. Where is the function `getTaskListJSX` called in `TaskList`?
     - How would the code change without this helper function?
+    
+
 1. What component is `TASKS` passed to in `App`?
     - How does the component pass `TASKS`?
     - What element is the component wrapped in?
