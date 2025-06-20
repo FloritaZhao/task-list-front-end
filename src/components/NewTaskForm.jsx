@@ -1,88 +1,48 @@
-import TaskList from './components/TaskList.jsx';
-import './App.css';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import NewTaskForm from './components/NewTaskForm';
+// 📄 src/components/NewTaskForm.jsx
+import PropTypes from 'prop-types';
+import { useState } from 'react';
+import './NewTaskForm.css';
 
-function App() {
-  const [taskData, setTaskData] = useState([]);
+const NewTaskForm = ({ onAddTask }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
-  useEffect(() => {
-    axios.get('http://localhost:5000/tasks')
-      .then ((response) => {
-        const formattedTasks = response.data.map((task) => ({
-          id: task.id,
-          title: task.title,
-          isComplete: task.is_complete,
-        }));
-        setTaskData(formattedTasks);
-      })
-      .catch((error) => {
-        console.error('Error fectching tasks:', error);
-      });
-  }, []);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (title.trim() === '') return; 
 
-  const toggleTaskComplete = (taskId) => {
-    const task = taskData.find((t) => t.id === taskId);
-    const url = `http://localhost:5000/tasks/${taskId}/${task.isComplete ? 'mark_incomplete' : 'mark_complete'}`;
-    axios.patch(url)
-      .then(()=>{
-        const updatedTasks = taskData.map((t)=>
-          t.id === taskId ? { ...t, isComplete: !t.isComplete }:t
-        );
-        setTaskData(updatedTasks);
-      })
-      .catch((error)=>{
-        console.error('Error toggling task:',error);
-      });
-  };
+    const newTask = {
+      title: title.trim(),
+      description: description.trim(),
+    };
 
-  const deleteTask = (taskId) => {
-    axios.delete(`http://localhost:5000/tasks/${taskId}`)
-      .then(() => {
-        const updatedTasks = taskData.filter((t) => t.id !== taskId);
-        setTaskData(updatedTasks);
-      })
-      .catch((error) => {
-        console.error('Error deleting task:', error);
-      });
-  };
-
-  const addNewTask = (titleText) =>{
-    axios.post('http://localhost:5000/tasks', {
-      title: titleText,
-      description:''
-    })
-      .then ((response) => {
-        const newTask = {
-          id: response.data.id,
-          title: response.data.title,
-          isComplete: response.data.is_complete,
-        };
-        setTaskData([...taskData, newTask]);
-      })
-      .catch((error) => {
-        console.error('Error adding task:', error);
-      });
+    onAddTask(newTask);
+    setTitle('');
+    setDescription('');
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Ada&apos;s Task List</h1>
-      </header>
-      <main>
-        <div>
-          <NewTaskForm onAddTask={addNewTask} />
-          <TaskList
-            tasks={taskData}
-            onTaskCompleteToggle= {toggleTaskComplete}
-            deleteThisTask = {deleteTask}
-          />
-        </div>
-      </main>
-    </div>
+    <form className="new-task-form" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="New task title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+      />
+      <input
+        type="text"
+        placeholder="Task description (optional)"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <button type="submit">Add Task</button>
+    </form>
   );
 };
 
-export default App;
+NewTaskForm.propTypes = {
+  onAddTask: PropTypes.func.isRequired,
+};
+
+export default NewTaskForm;

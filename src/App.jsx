@@ -8,7 +8,7 @@ function App() {
   const [taskData, setTaskData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/tasks')
+    axios.get('http://127.0.0.1:5000/tasks')
       .then ((response) => {
         const formattedTasks = response.data.map((task) => ({
           id: task.id,
@@ -24,7 +24,7 @@ function App() {
 
   const toggleTaskComplete = (taskId) => {
     const task = taskData.find((t) => t.id === taskId);
-    const url = `http://localhost:5000/tasks/${taskId}/${task.isComplete ? 'mark_incomplete' : 'mark_complete'}`;
+    const url = `http://127.0.0.1:5000/tasks/${taskId}/${task.isComplete ? 'mark_incomplete' : 'mark_complete'}`;
     axios.patch(url)
       .then(()=>{
         const updatedTasks = taskData.map((t)=>
@@ -38,7 +38,7 @@ function App() {
   };
 
   const deleteTask = (taskId) => {
-    axios.delete(`http://localhost:5000/tasks/${taskId}`)
+    axios.delete(`http://127.0.0.1:5000/tasks/${taskId}`)
       .then(() => {
         const updatedTasks = taskData.filter((t) => t.id !== taskId);
         setTaskData(updatedTasks);
@@ -48,16 +48,16 @@ function App() {
       });
   };
 
-  const addNewTask = (titleText) =>{
-    axios.post('http://localhost:5000/tasks', {
-      title: titleText,
-      description:''
+  const addNewTask = ({ title, description }) =>{
+    axios.post('http://127.0.0.1:5000/tasks', {
+      title,
+      description,
     })
       .then ((response) => {
         const newTask = {
-          id: response.data.id,
-          title: response.data.title,
-          isComplete: response.data.is_complete,
+          id: response.data.task.id,
+          title: response.data.task.title,
+          isComplete: response.data.task.is_complete,
         };
         setTaskData([...taskData, newTask]);
       })
